@@ -5,6 +5,8 @@ const PLAYER := preload("res://player/player.tscn")
 const DEATH_ZONE := preload("res://death_zone/death_zone.tscn")
 const BALL := preload("res://ball/ball.tscn")
 
+var rng = RandomNumberGenerator.new()
+
 func _ready() -> void:
 	var window_size : Vector2 = Vector2()
 	if Engine.editor_hint:
@@ -32,9 +34,8 @@ func _ready() -> void:
 
 	var ball := BALL.instance()
 	ball.position = window_size / 2
-	if not Engine.editor_hint:
-		# TODO: implement random shot
-		ball.move_vector = Vector2(300, 300)
+	rng.randomize()
+	ball.direction = rng.randf_range(PI, 2*PI)
 
 	add_child(ball)
 

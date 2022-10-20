@@ -1,7 +1,13 @@
 extends RigidBody2D
 
-export var move_vector := Vector2(0, 0)
+export var speed := 450
+export var direction := 0.0
 
 func _ready() -> void:
-	mode = RigidBody2D.MODE_CHARACTER
-	apply_central_impulse(move_vector)
+	linear_damp = 0
+	friction = 0
+	var move_vector := Vector2(speed, 0)
+	move_vector = move_vector.rotated(direction)
+	print(move_vector)
+	if not Engine.editor_hint:
+		apply_central_impulse(move_vector)
