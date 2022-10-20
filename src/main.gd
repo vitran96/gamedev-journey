@@ -1,7 +1,7 @@
 extends Node
 
-const PLAYER := preload("res://player/Player.tscn")
-const BALL := preload("res://ball/Ball.tscn")
+const PLAYER := preload("res://player/player.tscn")
+const BALL := preload("res://ball/ball.tscn")
 
 func _ready() -> void:
 	var window_size = get_viewport().size
