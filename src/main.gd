@@ -34,6 +34,8 @@ func _ready() -> void:
 
 	var ball := BALL.instance()
 	ball.position = window_size / 2
+#	TODO: need different random direction
+#	The current will produce a bad angle to play, it should be a cone shape direct to 1 of the player
 	rng.randomize()
 	ball.direction = rng.randf_range(PI, 2*PI)
 
