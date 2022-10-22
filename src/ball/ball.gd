@@ -8,6 +8,5 @@ func _ready() -> void:
 	friction = 0
 	var move_vector := Vector2(speed, 0)
 	move_vector = move_vector.rotated(direction)
-	print(move_vector)
 	if not Engine.editor_hint:
 		apply_central_impulse(move_vector)
