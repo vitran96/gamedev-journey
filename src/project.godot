@@ -23,6 +23,7 @@ config/icon="res://icon.png"
 
 GlobalSettings="*res://global_settings.gd"
 GlobalVars="*res://global_vars.gd"
+PlayerTypes="*res://player_types.gd"
 
 [display]
 

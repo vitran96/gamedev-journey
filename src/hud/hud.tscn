@@ -1,9 +1,11 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://hud/vseparator.tres" type="StyleBox" id=1]
 [ext_resource path="res://hud/score_label.tscn" type="PackedScene" id=2]
+[ext_resource path="res://hud/hud.gd" type="Script" id=3]
 
 [node name="HUD" type="CanvasLayer"]
+script = ExtResource( 3 )
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 anchor_right = 1.0
