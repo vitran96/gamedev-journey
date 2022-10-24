@@ -1,3 +1,4 @@
+tool
 extends CanvasLayer
 
 func set_score_text(player_type: int, score: int):

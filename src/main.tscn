@@ -10,6 +10,7 @@
 script = ExtResource( 2 )
 
 [node name="Background" type="Sprite" parent="."]
+visible = false
 scale = Vector2( 1.05469, 1.2 )
 texture = ExtResource( 1 )
 centered = false
