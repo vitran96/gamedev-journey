@@ -20,6 +20,7 @@ func _ready() -> void:
 		get_tree().paused = true
 
 	menu_node.set_visibility(true)
+	menu_node.connect("restart_game", self, "_on_reset_game")
 
 	GlobalVars.player_1_score = 0
 	GlobalVars.player_2_score = 0
@@ -78,6 +79,9 @@ func reset_ball() -> void:
 	var window_size := GlobalSettings.get_window_size()
 	ball_node = create_ball(window_size / 2)
 	add_child(ball_node)
+
+func _on_reset_game() -> void:
+	get_tree().reload_current_scene()
 
 func _on_hit_death_zone(player_type: int) -> void:
 	match player_type:
