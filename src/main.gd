@@ -8,6 +8,7 @@ const BALL := preload("res://ball/ball.tscn")
 var rng = RandomNumberGenerator.new()
 
 onready var hud_node := $HUD
+onready var menu_node := $Menu
 
 var player_1_node: Node = null
 var player_2_node: Node = null
@@ -15,20 +16,25 @@ var player_2_node: Node = null
 var ball_node: Node = null
 
 func _ready() -> void:
-	hud_node.set_score_text(PlayerTypes.PLAYER_1, GlobalVars.player_1_score)
-	hud_node.set_score_text(PlayerTypes.PLAYER_2, GlobalVars.player_2_score)
+	if not Engine.editor_hint:
+		get_tree().paused = true
+
+	menu_node.set_visibility(true)
+
+	GlobalVars.player_1_score = 0
+	GlobalVars.player_2_score = 0
 
 	var window_size := GlobalSettings.get_window_size()
 	var middle_y := window_size.y / 2
 
-	player_1_node= create_player(Vector2(GlobalVars.PLAYER_POSITION_OFFSET, middle_y), PlayerTypes.PLAYER_1)
+	player_1_node = create_player(Vector2(GlobalVars.PLAYER_POSITION_OFFSET, middle_y), PlayerTypes.PLAYER_1)
 	player_1_node.name = "Player1"
 	add_child(player_1_node)
 
 	var death_zone_1 := create_death_zone(Vector2(0 - GlobalVars.DEATH_ZONE_OFFSET, middle_y), PlayerTypes.PLAYER_1)
 	add_child(death_zone_1)
 
-	player_2_node= create_player(Vector2(window_size.x - GlobalVars.PLAYER_POSITION_OFFSET, middle_y), PlayerTypes.PLAYER_2)
+	player_2_node = create_player(Vector2(window_size.x - GlobalVars.PLAYER_POSITION_OFFSET, middle_y), PlayerTypes.PLAYER_2)
 	player_2_node.name = "Player2"
 	add_child(player_2_node)
 
