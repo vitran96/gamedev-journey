@@ -1,10 +1,14 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://player/player.gd" type="Script" id=1]
 [ext_resource path="res://player/player.png" type="Texture" id=2]
+[ext_resource path="res://sound/impactMetal_light_000.ogg" type="AudioStream" id=3]
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 6.21332, 50.2837 )
+
+[sub_resource type="RectangleShape2D" id=2]
+extents = Vector2( 6, 50 )
 
 [node name="Player" type="KinematicBody2D"]
 scale = Vector2( 1, 1.5 )
@@ -15,3 +19,12 @@ texture = ExtResource( 2 )
 
 [node name="PlayerShape" type="CollisionShape2D" parent="."]
 shape = SubResource( 1 )
+
+[node name="BallHitAudio" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource( 3 )
+
+[node name="SoundDetectArea2D" type="Area2D" parent="."]
+
+[node name="Shape2D" type="CollisionShape2D" parent="SoundDetectArea2D"]
+shape = SubResource( 2 )
+[connection signal="body_exited" from="SoundDetectArea2D" to="." method="_on_Area2D_body_exited"]

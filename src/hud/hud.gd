@@ -9,4 +9,4 @@ func set_score_text(player_type: int, score: int):
 		PlayerTypes.PLAYER_1:
 			score_1_node.text = String(score)
 		PlayerTypes.PLAYER_2:
-			score_1_node.text = String(score)
+			score_2_node.text = String(score)
