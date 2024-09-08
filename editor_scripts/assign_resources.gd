@@ -20,47 +20,49 @@ func _run() -> void:
 
 	var children := scene.get_children()
 
-	var boundary1: Node
-	var boundary2: Node
+	var top_boundary: Node
+	var bottom_boundary: Node
 
-	var player1: Node
-	var player2: Node
+	var left_player: Node
+	var right_player: Node
 
-	# Delete player node
+	# Check if node is created
 	for child in children:
 		if child is Player:
-#			scene.remove_child(child)
-#			child.queue_free()
-			if child.name == "Player1":
-				player1 = child
-			elif child.name == "Player2":
-				player2 = child
+			if child.name == "LeftPlayer":
+				left_player = child
+			elif child.name == "RightPlayer":
+				right_player = child
 		elif child is Boundary:
 			if child.name == "TopBoundary":
-				boundary1 = child
+				top_boundary = child
 			elif child.name == "BottomBoundary":
-				boundary2 = child
+				bottom_boundary = child
+
+	# Score board
+
+	# Separator
 
 	# Add boundary
-	if not boundary1:
-		boundary1 = _create_boundary(scene, 0, "TopBoundary")
+	if not top_boundary:
+		top_boundary = _create_boundary(scene, 0, "TopBoundary")
 
-	if not boundary2:
-		boundary2 = _create_boundary(scene, game_height - 10, "BottomBoundary")
+	if not bottom_boundary:
+		bottom_boundary = _create_boundary(scene, game_height - 10, "BottomBoundary")
 
 	# Add player
 	var player_y = game_height / 2 - 130 / 2
-	if not player1:
-		player1 = _create_player(scene, "Player1")
+	if not left_player:
+		left_player = _create_player(scene, "LeftPlayer")
 
-	player1.position = Vector2(10, player_y)
+	left_player.position = Vector2(10, player_y)
 
-	if not player2:
-		player2 = _create_player(scene, "Player2")
+	if not right_player:
+		right_player = _create_player(scene, "RightPlayer")
 
-	player2.position = Vector2(game_width - 10 - 15, player_y)
+	right_player.position = Vector2(game_width - 10 - 15, player_y)
 
-
+	# Ball
 
 	print("DONE")
 
