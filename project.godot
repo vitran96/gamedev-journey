@@ -9,12 +9,18 @@
 config_version=4
 
 _global_script_classes=[ {
-"base": "Node",
+"base": "StaticBody2D",
+"class": "Boundary",
+"language": "GDScript",
+"path": "res://boundary.gd"
+}, {
+"base": "KinematicBody2D",
 "class": "Player",
 "language": "GDScript",
 "path": "res://player.gd"
 } ]
 _global_script_class_icons={
+"Boundary": "",
 "Player": ""
 }
 
@@ -23,6 +29,10 @@ _global_script_class_icons={
 config/name="My Pong"
 run/main_scene="res://main.tscn"
 config/icon="res://icon.png"
+
+[display]
+
+window/size/resizable=false
 
 [editor_plugins]
 

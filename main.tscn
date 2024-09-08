@@ -1,13 +1,23 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://player.gd" type="Script" id=1]
 [ext_resource path="res://player.tscn" type="PackedScene" id=2]
+[ext_resource path="res://boundary.gd" type="Script" id=3]
+[ext_resource path="res://boundary.tscn" type="PackedScene" id=4]
 
 [node name="GameScreen" type="Node2D"]
 
-[node name="Player1" type="Node2D" parent="." instance=ExtResource( 2 )]
+[node name="TopBoundary" type="StaticBody2D" parent="." instance=ExtResource( 4 )]
+script = ExtResource( 3 )
+
+[node name="BottomBoundary" type="StaticBody2D" parent="." instance=ExtResource( 4 )]
+position = Vector2( 0, 590 )
+script = ExtResource( 3 )
+
+[node name="Player1" type="KinematicBody2D" parent="." instance=ExtResource( 2 )]
+position = Vector2( 10, 235 )
 script = ExtResource( 1 )
 
-[node name="Player2" type="Node2D" parent="." instance=ExtResource( 2 )]
-position = Vector2( 100, 0 )
+[node name="Player2" type="KinematicBody2D" parent="." instance=ExtResource( 2 )]
+position = Vector2( 999, 235 )
 script = ExtResource( 1 )
