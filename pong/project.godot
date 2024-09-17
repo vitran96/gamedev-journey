@@ -9,6 +9,11 @@
 config_version=4
 
 _global_script_classes=[ {
+"base": "RigidBody2D",
+"class": "Ball",
+"language": "GDScript",
+"path": "res://ball.gd"
+}, {
 "base": "StaticBody2D",
 "class": "Boundary",
 "language": "GDScript",
@@ -25,6 +30,7 @@ _global_script_classes=[ {
 "path": "res://player.gd"
 } ]
 _global_script_class_icons={
+"Ball": "",
 "Boundary": "",
 "Goal": "",
 "Player": ""
@@ -51,6 +57,10 @@ enabled=PoolStringArray( "terminal" )
 [gdnative]
 
 singletons=[  ]
+
+[global]
+
+color=false
 
 [input]
 
@@ -117,4 +127,5 @@ right_player_down={
 
 [rendering]
 
+environment/default_clear_color=Color( 0.0705882, 0.0705882, 0.0705882, 1 )
 environment/default_environment="res://default_env.tres"

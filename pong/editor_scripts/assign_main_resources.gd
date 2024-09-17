@@ -3,6 +3,7 @@ extends EditorScript
 
 const player_scene := preload("res://player.tscn")
 const boundary_scene := preload("res://boundary.tscn")
+const ball_scene := preload("res://ball.tscn")
 
 func _run() -> void:
 	if not Engine.editor_hint:
@@ -20,11 +21,16 @@ func _run() -> void:
 
 	var children := scene.get_children()
 
+	var left_goal: Node
+	var right_goal: Node
+
 	var top_boundary: Node
 	var bottom_boundary: Node
 
 	var left_player: Node
 	var right_player: Node
+
+	var ball: Node
 
 	# Check if node is created
 	for child in children:
@@ -38,12 +44,21 @@ func _run() -> void:
 				top_boundary = child
 			elif child.name == "BottomBoundary":
 				bottom_boundary = child
+		elif child is Ball:
+			ball = child
+		elif child is Goal:
+			if child.name == "LeftGoal":
+				left_goal = child
+			elif child.name == "RightGoal":
+				right_goal = child
+
+	# Goal
 
 	# Score board
 
 	# Separator
 
-	# Add boundary
+	# Boundary
 	if not top_boundary:
 		top_boundary = _create_boundary(scene, 0, "TopBoundary")
 
@@ -53,16 +68,18 @@ func _run() -> void:
 	# Add player
 	var player_y = game_height / 2 - 130 / 2
 	if not left_player:
-		left_player = _create_player(scene, "LeftPlayer")
+		left_player = _create_player(scene, Vector2(10, player_y), "LeftPlayer")
 
-	left_player.position = Vector2(10, player_y)
+#	left_player.position = Vector2(10, player_y)
 
 	if not right_player:
-		right_player = _create_player(scene, "RightPlayer")
+		right_player = _create_player(scene, Vector2(game_width - 10 - 15, player_y), "RightPlayer")
 
-	right_player.position = Vector2(game_width - 10 - 15, player_y)
+#	right_player.position = Vector2(game_width - 10 - 15, player_y)
 
 	# Ball
+	if not ball:
+		ball = _create_ball(scene, Vector2(game_width / 2, game_height / 2), "Ball")
 
 	print("DONE")
 
@@ -76,10 +93,22 @@ func _create_boundary(root: Node, y: int, name: String) -> Node:
 
 	return boundary
 
-func _create_player(root: Node, name: String) -> Node:
+func _create_player(root: Node, position: Vector2, name: String) -> Node:
 	var player: Node = player_scene.instance()
 	player.name = name
 	root.add_child(player)
 	player.owner = root
 
+	player.position = position
+
 	return player
+
+func _create_ball(root: Node, position: Vector2, name: String) -> Node:
+	var ball: Node = ball_scene.instance()
+	ball.name = name
+	root.add_child(ball)
+	ball.owner = root
+
+	ball.position = position
+
+	return ball
