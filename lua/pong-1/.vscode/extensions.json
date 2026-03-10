@@ -11,6 +11,8 @@
         "tal7aouy.rainbow-bracket",
         "cobaltblu27.rainbow-highlighter",
         "slevesque.shader",
-        "bschulte.love"
+        "bschulte.love",
+        "yinfei.luahelper",
+        "actboy168.lua-debug"
     ]
 }
