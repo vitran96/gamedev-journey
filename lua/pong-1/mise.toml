@@ -2,4 +2,9 @@
 jj = "0.39.0"
 node = "24.14.0"
 "npm:@google/gemini-cli" = "0.32.1"
+watchexec = "2.5.0"
 # lua = "5.1"
+
+[tasks.dev]
+alias = "s"
+run = "love ."
