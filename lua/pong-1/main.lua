@@ -5,6 +5,11 @@ local GameState = {
     GAME_OVER = 4
 }
 
+local GeometryMode = {
+    FILL = "fill",
+    LINE = "line",
+}
+
 local PADDLE_WIDTH = 10
 local PADDLE_HEIGHT = 100
 
@@ -27,6 +32,8 @@ local player2 = {
     score = 0,
     isAI = false
 }
+
+local font = nil
 
 local ball = {
     x = 0,
@@ -63,6 +70,8 @@ function love.load()
         radius = 12,
         speed = 3
     }
+
+    font = love.graphics.newFont("assets/fonts/PressStart2P-Regular.ttf", 48)
 end
 
 -- TODO: implement AI for player 2
@@ -73,24 +82,27 @@ function love.draw()
     if gameState == GameState.PLAYING then
         -- Draw the 2 paddles
         love.graphics.setColor(160, 160, 160)
+        -- New to create & set font because default has a low size to scale
+        love.graphics.setFont(font)
 
         -- Paddle 1
-        love.graphics.rectangle("fill", player1.x, player1.y, PADDLE_WIDTH, PADDLE_HEIGHT);
+        love.graphics.rectangle(GeometryMode.FILL, player1.x, player1.y, PADDLE_WIDTH, PADDLE_HEIGHT);
 
         -- Paddle 2
-        love.graphics.rectangle("fill", player2.x, player2.y, PADDLE_WIDTH, PADDLE_HEIGHT);
+        love.graphics.rectangle(GeometryMode.FILL, player2.x, player2.y, PADDLE_WIDTH, PADDLE_HEIGHT);
 
         -- Draw horizontal split
-        love.graphics.rectangle("fill", windowWidth / 2 - 1, 0, 2, windowHeight);
+        love.graphics.rectangle(GeometryMode.FILL, windowWidth / 2 - 1, 0, 2, windowHeight);
 
         -- Draw the score
-        -- Score 1
-        love.graphics.print(player1.score, windowWidth / 2, windowHeight / 2, 0, 20)
+        -- Score board 1
+        love.graphics.print(player1.score, windowWidth / 2 - 52)
 
-        -- Score 2
+        -- Score board 2
+        love.graphics.print(player2.score, windowWidth / 2 + 10)
 
         -- Draw the ball
-        love.graphics.circle("line", ball.x, ball.y, ball.radius)
+        love.graphics.circle(GeometryMode.FILL, ball.x, ball.y, ball.radius)
     elseif gameState == GameState.MENU then
         -- TODO:
         -- Draw the menu
