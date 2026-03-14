@@ -1,3 +1,5 @@
+local PLAYER_FONT_PATH = "assets/fonts/PressStart2P-Regular.ttf"
+
 local GameState = {
     MENU = 1,
     PLAYING = 2,
@@ -33,7 +35,19 @@ local player2 = {
     isAI = false
 }
 
-local font = nil
+local PLAYER_SPEED = 5
+
+local PLAYER_1_CONTROL = {
+    up = "w",
+    down = "s"
+}
+
+local PLAYER_2_CONTROL = {
+    up = "up",
+    down = "down"
+}
+
+local scoreBoardFont = nil
 
 local ball = {
     x = 0,
@@ -71,19 +85,23 @@ function love.load()
         speed = 3
     }
 
-    font = love.graphics.newFont("assets/fonts/PressStart2P-Regular.ttf", 48)
+    scoreBoardFont = love.graphics.newFont(PLAYER_FONT_PATH, 48)
 end
 
 -- TODO: implement AI for player 2
 function love.update(delta)
+    -- Implement ball starting point
+    -- Implement ball movement
+    -- Implement collison
 end
 
 function love.draw()
     if gameState == GameState.PLAYING then
-        -- Draw the 2 paddles
-        love.graphics.setColor(160, 160, 160)
         -- New to create & set font because default has a low size to scale
-        love.graphics.setFont(font)
+        love.graphics.setFont(scoreBoardFont)
+        -- Draw the 2 paddles
+        -- love.graphics.setColor({160/255, 160/255, 160/255})
+        love.graphics.setColor(love.math.colorFromBytes(160, 160, 160))
 
         -- Paddle 1
         love.graphics.rectangle(GeometryMode.FILL, player1.x, player1.y, PADDLE_WIDTH, PADDLE_HEIGHT);
@@ -102,6 +120,7 @@ function love.draw()
         love.graphics.print(player2.score, windowWidth / 2 + 10)
 
         -- Draw the ball
+        love.graphics.setColor({210, 4, 45})
         love.graphics.circle(GeometryMode.FILL, ball.x, ball.y, ball.radius)
     elseif gameState == GameState.MENU then
         -- TODO:
