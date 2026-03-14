@@ -35,7 +35,7 @@ local player2 = {
     isAI = false
 }
 
-local PLAYER_SPEED = 5
+local PLAYER_SPEED = 100
 
 local PLAYER_1_CONTROL = {
     up = "w",
@@ -90,9 +90,37 @@ end
 
 -- TODO: implement AI for player 2
 function love.update(delta)
-    -- Implement ball starting point
-    -- Implement ball movement
-    -- Implement collison
+    if gameState == GameState.PLAYING then
+        -- Implement ball starting point
+        -- Implement ball movement
+        -- Split UP & DOWN detection make logic simpler
+        local player1Move, player2Move = 0, 0
+
+        if (love.keyboard.isDown(PLAYER_1_CONTROL.up)) then
+            player1Move = player1Move - PLAYER_SPEED * delta
+        end
+
+        if (love.keyboard.isDown(PLAYER_1_CONTROL.down)) then
+            player1Move = player1Move + PLAYER_SPEED * delta
+        end
+
+        -- Stop player if they are getting out of bound
+        player1.y = player1.y + player1Move
+
+        if (love.keyboard.isDown(PLAYER_2_CONTROL.up)) then
+            player2Move = player2Move - PLAYER_SPEED * delta
+        end
+
+        if (love.keyboard.isDown(PLAYER_2_CONTROL.down)) then
+            player2Move = player2Move + PLAYER_SPEED * delta
+        end
+
+        -- Stop player if they are getting out of bound
+        player2.y = player2.y + player2Move
+        -- Implement collision
+        -- If ball get behind player1 / player2, the oponent score a point -> ball go back to central with different starting point
+        -- If ball hit player1 / player2 / boundary, bounce the ball
+    end
 end
 
 function love.draw()
@@ -120,24 +148,35 @@ function love.draw()
         love.graphics.print(player2.score, windowWidth / 2 + 10)
 
         -- Draw the ball
-        love.graphics.setColor({210, 4, 45})
+        love.graphics.setColor(love.math.colorFromBytes(210, 4, 45))
         love.graphics.circle(GeometryMode.FILL, ball.x, ball.y, ball.radius)
+
+        -- PAUSE & QUIT buttons
+        -- if mouse hover on them, highlight
     elseif gameState == GameState.MENU then
         -- TODO:
         -- Draw the menu
+        -- if mouse hover on them, highlight
     elseif gameState == GameState.GAME_OVER then
         -- TODO:
         -- Draw the game over screen
+        -- if mouse hover on them, highlight
     elseif gameState == GameState.PAUSED then
         -- TODO:
         -- Draw the paused screen
+        -- if mouse hover on them, highlight
     end
 end
 
 function love.keypressed(key, scancode, isrepeat)
     -- TODO:
+    -- PLAYING -> pause key -> pause
+    -- PAUSE -> pause key -> playing
+    -- PAUSE / MENU / END -> up/down -> change options
+    -- PAUSE / MENU / END -> enter/escape -> choose options
 end
 
 function love.mousepressed(x, y, button, isTouch)
     -- TODO:
+    -- PAUSE / MENU / END -> left click -> choose option
 end
