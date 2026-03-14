@@ -36,6 +36,7 @@ local player2 = {
 }
 
 local PLAYER_SPEED = 100
+local BALL_SPEED = 150
 
 local PLAYER_1_CONTROL = {
     up = "w",
@@ -82,7 +83,7 @@ function love.load()
         x = windowWidth / 2,
         y = windowHeight / 2,
         radius = 12,
-        speed = 3
+        speed = 0
     }
 
     scoreBoardFont = love.graphics.newFont(PLAYER_FONT_PATH, 48)
@@ -91,11 +92,9 @@ end
 -- TODO: implement AI for player 2
 function love.update(delta)
     if gameState == GameState.PLAYING then
-        -- Implement ball starting point
-        -- Implement ball movement
-        -- Split UP & DOWN detection make logic simpler
         local player1Move, player2Move = 0, 0
 
+        -- Split UP & DOWN detection make logic simpler
         if (love.keyboard.isDown(PLAYER_1_CONTROL.up)) then
             player1Move = player1Move - PLAYER_SPEED * delta
         end
@@ -122,7 +121,15 @@ function love.update(delta)
             player2.y = player2NewY
         end
 
-        -- Implement collision
+        if (ball.speed == 0) then
+            -- Random starting vector
+        else
+            ball.x = ball.x + ball.speed * delta
+            ball.y = ball.y + ball.speed * delta
+
+            -- Implement ball movement
+            -- Implement collision
+        end
         -- If ball get behind player1 / player2, the oponent score a point -> ball go back to central with different starting point
         -- If ball hit player1 / player2 / boundary, bounce the ball
     end
