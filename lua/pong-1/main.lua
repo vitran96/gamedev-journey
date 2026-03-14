@@ -104,8 +104,10 @@ function love.update(delta)
             player1Move = player1Move + PLAYER_SPEED * delta
         end
 
-        -- Stop player if they are getting out of bound
-        player1.y = player1.y + player1Move
+        local player1NewY = player1.y + player1Move
+        if (player1NewY >= 0 and player1NewY + PADDLE_HEIGHT <= windowHeight) then
+            player1.y = player1.y + player1Move
+        end
 
         if (love.keyboard.isDown(PLAYER_2_CONTROL.up)) then
             player2Move = player2Move - PLAYER_SPEED * delta
@@ -115,8 +117,11 @@ function love.update(delta)
             player2Move = player2Move + PLAYER_SPEED * delta
         end
 
-        -- Stop player if they are getting out of bound
-        player2.y = player2.y + player2Move
+        local player2NewY = player2.y + player2Move
+        if (player2NewY >= 0 and player2NewY + PADDLE_HEIGHT <= windowHeight) then
+            player2.y = player2NewY
+        end
+
         -- Implement collision
         -- If ball get behind player1 / player2, the oponent score a point -> ball go back to central with different starting point
         -- If ball hit player1 / player2 / boundary, bounce the ball
