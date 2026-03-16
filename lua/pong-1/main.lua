@@ -54,7 +54,10 @@ local ball = {
     x = 0,
     y = 0,
     radius = 0,
-    speed = 0
+    speed = 0,
+    vectorX = 0,
+    vectorY = 0,
+    startTimer = 3,
 }
 
 function love.load()
@@ -69,21 +72,24 @@ function love.load()
     player1 = {
         x = GOAL_PADDING,
         y = (windowHeight - PADDLE_HEIGHT) / 2,
-        score = 0
+        score = 0,
     }
 
     player2 = {
         x = windowWidth - PADDLE_WIDTH - GOAL_PADDING,
         y = (windowHeight - PADDLE_HEIGHT) / 2,
         score = 0,
-        isAI = false
+        isAI = false,
     }
 
     ball = {
         x = windowWidth / 2,
         y = windowHeight / 2,
         radius = 12,
-        speed = 0
+        speed = BALL_SPEED,
+        vectorX = 0,
+        vectorY = 0,
+        startTimer = 3,
     }
 
     scoreBoardFont = love.graphics.newFont(PLAYER_FONT_PATH, 48)
@@ -121,12 +127,15 @@ function love.update(delta)
             player2.y = player2NewY
         end
 
-        if (ball.speed == 0) then
-            -- Random starting vector
+        if (ball.startTimer > 0) then
+            ball.startTimer = ball.startTimer - delta
         else
-            ball.x = ball.x + ball.speed * delta
-            ball.y = ball.y + ball.speed * delta
+            if (ball.vectorX == 0 and ball.vectorY == 0) then
+                -- Random
+            end
 
+            ball.x = ball.x + ball.vectorX * delta * ball.speed
+            ball.y = ball.y + ball.vectorY * delta * ball.speed
             -- Implement ball movement
             -- Implement collision
         end
