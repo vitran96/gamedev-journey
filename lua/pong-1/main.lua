@@ -89,7 +89,7 @@ function love.load()
         speed = BALL_SPEED,
         vectorX = 0,
         vectorY = 0,
-        startTimer = 3,
+        startTimer = 0.5,
     }
 
     scoreBoardFont = love.graphics.newFont(PLAYER_FONT_PATH, 48)
@@ -131,13 +131,26 @@ function love.update(delta)
             ball.startTimer = ball.startTimer - delta
         else
             if (ball.vectorX == 0 and ball.vectorY == 0) then
-                -- Random
+                -- Random starting vector
+                -- TODO: this might have edge case
+                local targetX = love.math.random(1, windowWidth - 1)
+                local targetY = love.math.random(1, windowHeight - 1)
+                local vectorX = targetX - ball.x
+                local vectorY = targetY - ball.y
+
+                local distance = math.sqrt(vectorX ^ 2 + vectorY ^ 2)
+
+                ball.vectorX = vectorX / distance
+                ball.vectorY = vectorY / distance
             end
 
-            ball.x = ball.x + ball.vectorX * delta * ball.speed
-            ball.y = ball.y + ball.vectorY * delta * ball.speed
+            local ballNewX = ball.x + ball.vectorX * delta * ball.speed
+            local ballNewY = ball.y + ball.vectorY * delta * ball.speed
             -- Implement ball movement
             -- Implement collision
+
+            ball.x = ballNewX
+            ball.y = ballNewY
         end
         -- If ball get behind player1 / player2, the oponent score a point -> ball go back to central with different starting point
         -- If ball hit player1 / player2 / boundary, bounce the ball
