@@ -36,7 +36,7 @@ local player2 = {
 }
 
 local PLAYER_SPEED = 100
-local BALL_SPEED = 150
+local BALL_SPEED = 160
 
 local PLAYER_1_CONTROL = {
     up = "w",
@@ -133,8 +133,8 @@ function love.update(delta)
             if (ball.vectorX == 0 and ball.vectorY == 0) then
                 -- Random starting vector
                 -- TODO: this might have edge case
-                local targetX = love.math.random(1, windowWidth - 1)
-                local targetY = love.math.random(1, windowHeight - 1)
+                local targetX = love.math.random(0, windowWidth)
+                local targetY = love.math.random(0, windowHeight)
                 local vectorX = targetX - ball.x
                 local vectorY = targetY - ball.y
 
@@ -146,8 +146,28 @@ function love.update(delta)
 
             local ballNewX = ball.x + ball.vectorX * delta * ball.speed
             local ballNewY = ball.y + ball.vectorY * delta * ball.speed
-            -- Implement ball movement
-            -- Implement collision
+
+            -- Collision with top & bottom
+            if (ballNewY - ball.radius <= 0) then
+                ball.vectorY = -ball.vectorY
+                ballNewY = ball.y + ball.vectorY * delta * ball.speed
+            elseif (ballNewY + ball.radius >= windowHeight) then
+                ball.vectorY = -ball.vectorY
+                ballNewY = ball.y + ball.vectorY * delta * ball.speed
+            end
+
+            -- Collision with left & right
+            if (ballNewX - ball.radius <= 0) then
+                -- TODO: should scoring
+                ball.vectorX =  -ball.vectorX
+                ballNewX = ball.x + ball.vectorX * delta * ball.speed
+            elseif (ballNewX + ball.radius >= windowWidth) then
+                -- TODO: should scoring
+                ball.vectorX = -ball.vectorX
+                ballNewX = ball.x + ball.vectorX * delta * ball.speed
+            end
+
+            -- Collision with paddles
 
             ball.x = ballNewX
             ball.y = ballNewY
