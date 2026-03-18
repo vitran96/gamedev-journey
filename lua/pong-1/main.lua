@@ -35,6 +35,20 @@ local player2 = {
     isAI = false
 }
 
+local player1Goal = {
+    x = 0,
+    y = 0,
+    width = 0,
+    height = 0,
+}
+
+local player2Goal = {
+    x = 0,
+    y = 0,
+    width = 0,
+    height = 0,
+}
+
 local PLAYER_SPEED = 100
 local BALL_SPEED = 160
 
@@ -75,11 +89,25 @@ function love.load()
         score = 0,
     }
 
+    player1Goal = {
+        x = 0,
+        y = 0,
+        width = GOAL_PADDING,
+        height = windowHeight,
+    }
+
     player2 = {
         x = windowWidth - PADDLE_WIDTH - GOAL_PADDING,
         y = (windowHeight - PADDLE_HEIGHT) / 2,
         score = 0,
         isAI = false,
+    }
+
+    player2Goal = {
+        x = windowWidth - GOAL_PADDING,
+        y = 0,
+        width = GOAL_PADDING,
+        height = windowHeight,
     }
 
     ball = {
@@ -130,9 +158,10 @@ function love.update(delta)
         if (ball.startTimer > 0) then
             ball.startTimer = ball.startTimer - delta
         else
+            -- TODO: consider check boundary 1st before calculation
             if (ball.vectorX == 0 and ball.vectorY == 0) then
                 -- Random starting vector
-                -- TODO: this might have edge case
+                -- TODO: better limit to only shoot 315 -> 45 & 135 -> 215
                 local targetX = love.math.random(0, windowWidth)
                 local targetY = love.math.random(0, windowHeight)
                 local vectorX = targetX - ball.x
@@ -157,14 +186,24 @@ function love.update(delta)
             end
 
             -- Collision with left & right
-            if (ballNewX - ball.radius <= 0) then
-                -- TODO: should scoring
-                ball.vectorX =  -ball.vectorX
-                ballNewX = ball.x + ball.vectorX * delta * ball.speed
-            elseif (ballNewX + ball.radius >= windowWidth) then
-                -- TODO: should scoring
-                ball.vectorX = -ball.vectorX
-                ballNewX = ball.x + ball.vectorX * delta * ball.speed
+            if (ballNewX - ball.radius <= player1Goal.x + player1Goal.width) then
+                ball.x = windowWidth / 2
+                ball.y = windowHeight / 2
+                ball.vectorX = 0
+                ball.vectorY = 0
+                ball.startTimer = 0.5
+                player2.score = player2.score + 1
+
+                return
+            elseif (ballNewX + ball.radius >= player2Goal.x) then
+                ball.x = windowWidth / 2
+                ball.y = windowHeight / 2
+                ball.vectorX = 0
+                ball.vectorY = 0
+                ball.startTimer = 0.5
+                player1.score = player1.score + 1
+
+                return
             end
 
             -- Collision with paddles
