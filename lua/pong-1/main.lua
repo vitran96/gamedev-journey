@@ -207,6 +207,25 @@ function love.update(delta)
             end
 
             -- Collision with paddles
+            -- TODO: I don't understand this part yet
+            local closedPointX = math.max(player1.x, math.min(ballNewX, player1.x + PADDLE_WIDTH))
+            local closedPointY = math.max(player1.y, math.min(ballNewY, player1.y + PADDLE_HEIGHT))
+            local distance = math.sqrt((closedPointX - ballNewX) ^ 2 + (closedPointY - ballNewY) ^ 2)
+
+            if (distance <= ball.radius) then
+                ball.vectorX = -ball.vectorX
+                ballNewX = ball.x + ball.vectorX * delta * ball.speed
+            end
+
+            closedPointX = math.max(player2.x, math.min(ballNewX, player2.x + PADDLE_WIDTH))
+            closedPointY = math.max(player2.y, math.min(ballNewY, player2.y + PADDLE_HEIGHT))
+            distance = math.sqrt((closedPointX - ballNewX) ^ 2 + (closedPointY - ballNewY) ^ 2)
+
+            if (distance <= ball.radius) then
+                ball.vectorX = -ball.vectorX
+                ballNewX = ball.x + ball.vectorX * delta * ball.speed
+            end
+
 
             ball.x = ballNewX
             ball.y = ballNewY
