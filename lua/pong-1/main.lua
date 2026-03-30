@@ -92,7 +92,7 @@ function love.load()
     player1Goal = {
         x = 0,
         y = 0,
-        width = GOAL_PADDING,
+        width = 5,
         height = windowHeight,
     }
 
@@ -104,9 +104,9 @@ function love.load()
     }
 
     player2Goal = {
-        x = windowWidth - GOAL_PADDING,
+        x = windowWidth,
         y = 0,
-        width = GOAL_PADDING,
+        width = 5,
         height = windowHeight,
     }
 
@@ -186,7 +186,7 @@ function love.update(delta)
             end
 
             -- Collision with left & right
-            if (ballNewX - ball.radius <= player1Goal.x + player1Goal.width) then
+            if (ballNewX - ball.radius <= player1Goal.x) then
                 ball.x = windowWidth / 2
                 ball.y = windowHeight / 2
                 ball.vectorX = 0
@@ -238,6 +238,7 @@ end
 function love.draw()
     if gameState == GameState.PLAYING then
         -- New to create & set font because default has a low size to scale
+        ---@diagnostic disable-next-line: param-type-mismatch
         love.graphics.setFont(scoreBoardFont)
         -- Draw the 2 paddles
         -- love.graphics.setColor({160/255, 160/255, 160/255})
