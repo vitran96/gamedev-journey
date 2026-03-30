@@ -208,6 +208,7 @@ function love.update(delta)
 
             -- Collision with paddles
             -- TODO: I don't understand this part yet
+            -- TODO: if hit by the side, it will cause bug and bounce internally
             local closedPointX = math.max(player1.x, math.min(ballNewX, player1.x + PADDLE_WIDTH))
             local closedPointY = math.max(player1.y, math.min(ballNewY, player1.y + PADDLE_HEIGHT))
             local distance = math.sqrt((closedPointX - ballNewX) ^ 2 + (closedPointY - ballNewY) ^ 2)
@@ -254,6 +255,7 @@ function love.draw()
         love.graphics.rectangle(GeometryMode.FILL, windowWidth / 2 - 1, 0, 2, windowHeight);
 
         -- Draw the score
+        -- TODO: score > 2 digits have display bug overlap with the middle line
         -- Score board 1
         love.graphics.print(player1.score, windowWidth / 2 - 52)
 
