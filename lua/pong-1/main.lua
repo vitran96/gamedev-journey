@@ -49,8 +49,8 @@ local player2Goal = {
     height = 0,
 }
 
-local PLAYER_SPEED = 100
-local BALL_SPEED = 160
+local PLAYER_SPEED = 170
+local BALL_SPEED = 280
 
 local PLAYER_1_CONTROL = {
     up = "w",
