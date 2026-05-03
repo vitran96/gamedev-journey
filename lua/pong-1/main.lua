@@ -77,32 +77,9 @@ local ball = {
 
 local MENU_ITEM_GAP = 80
 local MENU = {}
+local focusedStartMenuIndex = 1
 
-function love.load()
-    gameState = GameState.MENU
-    -- gameState = GameState.PLAYING
-
-    windowWidth = love.graphics.getWidth()
-    windowHeight = love.graphics.getHeight()
-
-    MENU = {
-        {
-            label = "2 Players",
-            x = windowWidth,
-            y = windowHeight / 2 - MENU_ITEM_GAP,
-        },
-        {
-            label = "VS Bot",
-            x = windowWidth,
-            y = windowHeight / 2,
-        },
-        {
-            label = "Quit",
-            x = windowWidth,
-            y = windowHeight / 2 + MENU_ITEM_GAP,
-        }
-    }
-
+local function startGame()
     player1 = {
         x = GOAL_PADDING,
         y = (windowHeight - PADDLE_HEIGHT) / 2,
@@ -138,6 +115,41 @@ function love.load()
         vectorX = 0,
         vectorY = 0,
         startTimer = 0.5,
+    }
+
+    gameState = GameState.PLAYING
+end
+
+local function quitGame()
+    love.event.quit()
+end
+
+function love.load()
+    gameState = GameState.MENU
+    -- gameState = GameState.PLAYING
+
+    windowWidth = love.graphics.getWidth()
+    windowHeight = love.graphics.getHeight()
+
+    MENU = {
+        {
+            label = "2 Players",
+            y = windowHeight / 2 - MENU_ITEM_GAP,
+            limit = windowWidth,
+            action = startGame
+        },
+        -- {
+        --     label = "VS Bot",
+        --     y = windowHeight / 2,
+        --     limit = windowWidth,
+        --     action = ...
+        -- },
+        {
+            label = "Quit",
+            y = windowHeight / 2 + MENU_ITEM_GAP,
+            limit = windowWidth,
+            action = quitGame
+        }
     }
 
     scoreBoardFont = love.graphics.newFont(PLAYER_FONT_PATH, 48)
@@ -288,15 +300,21 @@ function love.draw()
         -- PAUSE & QUIT buttons
         -- if mouse hover on them, highlight
     elseif gameState == GameState.MENU then
-        -- TODO:
         -- Draw the menu
         ---@diagnostic disable-next-line: param-type-mismatch
         love.graphics.setFont(menuFont)
 
-        for _, value in pairs(MENU) do
-            love.graphics.printf(value.label, 0, value.y, value.x, "center")
+        for i, value in ipairs(MENU) do
+            local label = value.label
+            if i == focusedStartMenuIndex then
+                love.graphics.setColor(love.math.colorFromBytes(160, 160, 160, 255))
+                label = "> " .. label .. " <"
+            else
+                love.graphics.setColor(love.math.colorFromBytes(160, 160, 160, 60))
+            end
+
+            love.graphics.printf(label, 0, value.y, value.limit, "center")
         end
-        -- if mouse hover on them, highlightd
     elseif gameState == GameState.GAME_OVER then
         -- TODO:
         -- Draw the game over screen
@@ -310,10 +328,26 @@ end
 
 function love.keypressed(key, scancode, isrepeat)
     -- TODO:
-    -- PLAYING -> pause key -> pause
-    -- PAUSE -> pause key -> playing
-    -- PAUSE / MENU / END -> up/down -> change options
-    -- PAUSE / MENU / END -> enter/escape -> choose options
+    if gameState == GameState.PLAYING then
+        -- PLAYING -> pause key -> pause
+    elseif gameState == GameState.MENU then
+        -- PAUSE -> pause key -> playing
+        -- PAUSE / MENU / END -> up/down -> change options
+        -- PAUSE / MENU / END -> enter/escape -> choose options
+        if key == "up" then
+            if focusedStartMenuIndex > 1 then
+                focusedStartMenuIndex = focusedStartMenuIndex - 1
+            end
+        elseif key == "down" then
+            if focusedStartMenuIndex <= #(MENU) then
+                focusedStartMenuIndex = focusedStartMenuIndex + 1
+            end
+        elseif key == "return" or key == "kpenter" then
+            MENU[focusedStartMenuIndex].action()
+        end
+    elseif gameState == GameState.GAME_OVER then
+    elseif gameState == GameState.PAUSED then
+    end
 end
 
 function love.mousepressed(x, y, button, isTouch)
