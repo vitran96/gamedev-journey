@@ -63,6 +63,7 @@ local PLAYER_2_CONTROL = {
 }
 
 local scoreBoardFont = nil
+local menuFont = nil
 
 local ball = {
     x = 0,
@@ -74,14 +75,33 @@ local ball = {
     startTimer = 3,
 }
 
+local MENU_ITEM_GAP = 80
+local MENU = {}
+
 function love.load()
-    gameState = GameState.PLAYING
+    gameState = GameState.MENU
+    -- gameState = GameState.PLAYING
 
     windowWidth = love.graphics.getWidth()
     windowHeight = love.graphics.getHeight()
 
-
-    GOAL_PADDING = 20
+    MENU = {
+        {
+            label = "2 Players",
+            x = windowWidth,
+            y = windowHeight / 2 - MENU_ITEM_GAP,
+        },
+        {
+            label = "VS Bot",
+            x = windowWidth,
+            y = windowHeight / 2,
+        },
+        {
+            label = "Quit",
+            x = windowWidth,
+            y = windowHeight / 2 + MENU_ITEM_GAP,
+        }
+    }
 
     player1 = {
         x = GOAL_PADDING,
@@ -121,6 +141,7 @@ function love.load()
     }
 
     scoreBoardFont = love.graphics.newFont(PLAYER_FONT_PATH, 48)
+    menuFont = love.graphics.newFont(PLAYER_FONT_PATH, 36)
 end
 
 -- TODO: implement AI for player 2
@@ -231,8 +252,6 @@ function love.update(delta)
             ball.x = ballNewX
             ball.y = ballNewY
         end
-        -- If ball get behind player1 / player2, the oponent score a point -> ball go back to central with different starting point
-        -- If ball hit player1 / player2 / boundary, bounce the ball
     end
 end
 
@@ -271,7 +290,13 @@ function love.draw()
     elseif gameState == GameState.MENU then
         -- TODO:
         -- Draw the menu
-        -- if mouse hover on them, highlight
+        ---@diagnostic disable-next-line: param-type-mismatch
+        love.graphics.setFont(menuFont)
+
+        for _, value in pairs(MENU) do
+            love.graphics.printf(value.label, 0, value.y, value.x, "center")
+        end
+        -- if mouse hover on them, highlightd
     elseif gameState == GameState.GAME_OVER then
         -- TODO:
         -- Draw the game over screen
