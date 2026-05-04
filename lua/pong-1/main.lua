@@ -76,8 +76,15 @@ local ball = {
 }
 
 local MENU_ITEM_GAP = 80
-local MENU = {}
-local focusedStartMenuIndex = 1
+local START_MENU = {}
+local focusedIndex = 1
+
+local PAUSE_MENU = {}
+
+local GAME_OVER_MENU = {}
+
+local POINT_2_WIN = 5
+-- local POINT_2_WIN = 1
 
 local function startGame()
     player1 = {
@@ -131,7 +138,7 @@ function love.load()
     windowWidth = love.graphics.getWidth()
     windowHeight = love.graphics.getHeight()
 
-    MENU = {
+    START_MENU = {
         {
             label = "2 Players",
             y = windowHeight / 2 - MENU_ITEM_GAP,
@@ -146,7 +153,64 @@ function love.load()
         -- },
         {
             label = "Quit",
+            y = windowHeight / 2,
+            limit = windowWidth,
+            action = quitGame
+        }
+    }
+
+    PAUSE_MENU = {
+        {
+            label = "Continue",
+            y = windowHeight / 2 - MENU_ITEM_GAP,
+            limit = windowWidth,
+            action = function ()
+                focusedIndex = 1
+                gameState = GameState.PLAYING
+            end
+        },
+        {
+            label = "Restart",
+            y = windowHeight / 2,
+            limit = windowWidth,
+            action = startGame
+        },
+        {
+            label = "Back to menu",
             y = windowHeight / 2 + MENU_ITEM_GAP,
+            limit = windowWidth,
+            action = function ()
+                focusedIndex = 1
+                gameState = GameState.MENU
+            end
+        },
+        {
+            label = "Quit",
+            y = windowHeight / 2 + MENU_ITEM_GAP * 2,
+            limit = windowWidth,
+            action = quitGame
+        }
+    }
+
+    GAME_OVER_MENU = {
+        {
+            label = "Restart",
+            y = windowHeight / 2,
+            limit = windowWidth,
+            action = startGame
+        },
+        {
+            label = "Back to menu",
+            y = windowHeight / 2 + MENU_ITEM_GAP,
+            limit = windowWidth,
+            action = function ()
+                focusedIndex = 1
+                gameState = GameState.MENU
+            end
+        },
+        {
+            label = "Quit",
+            y = windowHeight / 2 + MENU_ITEM_GAP * 2,
             limit = windowWidth,
             action = quitGame
         }
@@ -159,6 +223,12 @@ end
 -- TODO: implement AI for player 2
 function love.update(delta)
     if gameState == GameState.PLAYING then
+
+        if player1.score >= POINT_2_WIN or player2.score >= POINT_2_WIN then
+            gameState = GameState.GAME_OVER
+            return
+        end
+
         local player1Move, player2Move = 0, 0
 
         -- Split UP & DOWN detection make logic simpler
@@ -297,16 +367,14 @@ function love.draw()
         love.graphics.setColor(love.math.colorFromBytes(210, 4, 45))
         love.graphics.circle(GeometryMode.FILL, ball.x, ball.y, ball.radius)
 
-        -- PAUSE & QUIT buttons
-        -- if mouse hover on them, highlight
     elseif gameState == GameState.MENU then
         -- Draw the menu
         ---@diagnostic disable-next-line: param-type-mismatch
         love.graphics.setFont(menuFont)
 
-        for i, value in ipairs(MENU) do
+        for i, value in ipairs(START_MENU) do
             local label = value.label
-            if i == focusedStartMenuIndex then
+            if i == focusedIndex then
                 love.graphics.setColor(love.math.colorFromBytes(160, 160, 160, 255))
                 label = "> " .. label .. " <"
             else
@@ -316,37 +384,98 @@ function love.draw()
             love.graphics.printf(label, 0, value.y, value.limit, "center")
         end
     elseif gameState == GameState.GAME_OVER then
-        -- TODO:
-        -- Draw the game over screen
-        -- if mouse hover on them, highlight
+        ---@diagnostic disable-next-line: param-type-mismatch
+        love.graphics.setFont(scoreBoardFont)
+        local winningPlayer = "Player 1"
+        if player2.score >= POINT_2_WIN then
+            winningPlayer = "Player 2"
+        end
+
+        love.graphics.setColor(love.math.colorFromBytes(173, 216, 230, 255))
+        love.graphics.printf(winningPlayer .. " WIN", 0, 50, 800, "center")
+
+        -- Draw the menu
+        ---@diagnostic disable-next-line: param-type-mismatch
+        love.graphics.setFont(menuFont)
+
+        for i, value in ipairs(GAME_OVER_MENU) do
+            local label = value.label
+            if i == focusedIndex then
+                love.graphics.setColor(love.math.colorFromBytes(160, 160, 160, 255))
+                label = "> " .. label .. " <"
+            else
+                love.graphics.setColor(love.math.colorFromBytes(160, 160, 160, 60))
+            end
+
+            love.graphics.printf(label, 0, value.y, value.limit, "center")
+        end
     elseif gameState == GameState.PAUSED then
-        -- TODO:
-        -- Draw the paused screen
-        -- if mouse hover on them, highlight
+        -- Draw the menu
+        ---@diagnostic disable-next-line: param-type-mismatch
+        love.graphics.setFont(menuFont)
+
+        for i, value in ipairs(PAUSE_MENU) do
+            local label = value.label
+            if i == focusedIndex then
+                love.graphics.setColor(love.math.colorFromBytes(160, 160, 160, 255))
+                label = "> " .. label .. " <"
+            else
+                love.graphics.setColor(love.math.colorFromBytes(160, 160, 160, 60))
+            end
+
+            love.graphics.printf(label, 0, value.y, value.limit, "center")
+        end
     end
 end
 
 function love.keypressed(key, scancode, isrepeat)
-    -- TODO:
     if gameState == GameState.PLAYING then
         -- PLAYING -> pause key -> pause
+        if key == "escape" then
+            focusedIndex = 1
+            gameState = GameState.PAUSED
+        end
     elseif gameState == GameState.MENU then
         -- PAUSE -> pause key -> playing
         -- PAUSE / MENU / END -> up/down -> change options
         -- PAUSE / MENU / END -> enter/escape -> choose options
         if key == "up" then
-            if focusedStartMenuIndex > 1 then
-                focusedStartMenuIndex = focusedStartMenuIndex - 1
+            if focusedIndex > 1 then
+                focusedIndex = focusedIndex - 1
             end
         elseif key == "down" then
-            if focusedStartMenuIndex <= #(MENU) then
-                focusedStartMenuIndex = focusedStartMenuIndex + 1
+            if focusedIndex <= #(START_MENU) then
+                focusedIndex = focusedIndex + 1
             end
         elseif key == "return" or key == "kpenter" then
-            MENU[focusedStartMenuIndex].action()
+            START_MENU[focusedIndex].action()
         end
     elseif gameState == GameState.GAME_OVER then
+        if key == "up" then
+            if focusedIndex > 1 then
+                focusedIndex = focusedIndex - 1
+            end
+        elseif key == "down" then
+            if focusedIndex <= #(GAME_OVER_MENU) then
+                focusedIndex = focusedIndex + 1
+            end
+        elseif key == "return" or key == "kpenter" then
+            GAME_OVER_MENU[focusedIndex].action()
+        end
     elseif gameState == GameState.PAUSED then
+        if key == "escape" then
+            gameState = GameState.PLAYING
+        elseif key == "up" then
+            if focusedIndex > 1 then
+                focusedIndex = focusedIndex - 1
+            end
+        elseif key == "down" then
+            if focusedIndex <= #(PAUSE_MENU) then
+                focusedIndex = focusedIndex + 1
+            end
+        elseif key == "return" or key == "kpenter" then
+            PAUSE_MENU[focusedIndex].action()
+        end
     end
 end
 
