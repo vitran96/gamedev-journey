@@ -153,7 +153,7 @@ function love.load()
 
     uiSoundSrc = love.audio.newSource(UI_SOUND_PATH, "static")
     bounceSoundSrc = love.audio.newSource(BOUNCING_SOUND_PATH, "static")
-    bgmSoundSrc = love.audio.newSource(BGM_PATH, "stream")
+    bgmSoundSrc = love.audio.newSource(BGM_PATH, "static")
     goalHitSoundSrc = love.audio.newSource(GOAL_HIT_SOUND_PATH, "static")
 
     windowWidth = love.graphics.getWidth()
