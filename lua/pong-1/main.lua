@@ -1,4 +1,9 @@
 local PLAYER_FONT_PATH = "assets/fonts/PressStart2P-Regular.ttf"
+local SOUND_PATH = "assets/sounds"
+local BGM_PATH = SOUND_PATH .. "/bensound-yesterday.mp3"
+local BOUNCING_SOUND_PATH = SOUND_PATH .. "/impactMetal_heavy_002.ogg"
+local UI_SOUND_PATH = SOUND_PATH .. "/switch_007.ogg"
+local GOAL_HIT_SOUND_PATH = SOUND_PATH .. "/impactGlass_medium_003.ogg"
 
 local GameState = {
     MENU = 1,
@@ -86,7 +91,18 @@ local GAME_OVER_MENU = {}
 local POINT_2_WIN = 5
 -- local POINT_2_WIN = 1
 
+local uiSoundSrc = nil
+local bounceSoundSrc = nil
+local bgmSoundSrc = nil
+local goalHitSoundSrc = nil
+
 local function startGame()
+    ---@diagnostic disable-next-line: need-check-nil, undefined-field
+    bgmSoundSrc:stop()
+
+    ---@diagnostic disable-next-line: need-check-nil, undefined-field
+    bgmSoundSrc:play()
+
     player1 = {
         x = GOAL_PADDING,
         y = (windowHeight - PADDLE_HEIGHT) / 2,
@@ -135,6 +151,11 @@ function love.load()
     gameState = GameState.MENU
     -- gameState = GameState.PLAYING
 
+    uiSoundSrc = love.audio.newSource(UI_SOUND_PATH, "static")
+    bounceSoundSrc = love.audio.newSource(BOUNCING_SOUND_PATH, "static")
+    bgmSoundSrc = love.audio.newSource(BGM_PATH, "stream")
+    goalHitSoundSrc = love.audio.newSource(GOAL_HIT_SOUND_PATH, "static")
+
     windowWidth = love.graphics.getWidth()
     windowHeight = love.graphics.getHeight()
 
@@ -167,6 +188,8 @@ function love.load()
             action = function ()
                 focusedIndex = 1
                 gameState = GameState.PLAYING
+                ---@diagnostic disable-next-line: need-check-nil, undefined-field
+                bgmSoundSrc:play()
             end
         },
         {
@@ -226,6 +249,8 @@ function love.update(delta)
 
         if player1.score >= POINT_2_WIN or player2.score >= POINT_2_WIN then
             gameState = GameState.GAME_OVER
+            ---@diagnostic disable-next-line: need-check-nil, undefined-field
+            bgmSoundSrc:stop()
             return
         end
 
@@ -283,9 +308,14 @@ function love.update(delta)
             if (ballNewY - ball.radius <= 0) then
                 ball.vectorY = -ball.vectorY
                 ballNewY = ball.y + ball.vectorY * delta * ball.speed
+
+                ---@diagnostic disable-next-line: need-check-nil, undefined-field
+                bounceSoundSrc:clone():play()
             elseif (ballNewY + ball.radius >= windowHeight) then
                 ball.vectorY = -ball.vectorY
                 ballNewY = ball.y + ball.vectorY * delta * ball.speed
+                ---@diagnostic disable-next-line: need-check-nil, undefined-field
+                bounceSoundSrc:clone():play()
             end
 
             -- Collision with left & right
@@ -297,6 +327,9 @@ function love.update(delta)
                 ball.startTimer = 0.5
                 player2.score = player2.score + 1
 
+                ---@diagnostic disable-next-line: need-check-nil, undefined-field
+                goalHitSoundSrc:clone():play()
+
                 return
             elseif (ballNewX + ball.radius >= player2Goal.x) then
                 ball.x = windowWidth / 2
@@ -305,6 +338,9 @@ function love.update(delta)
                 ball.vectorY = 0
                 ball.startTimer = 0.5
                 player1.score = player1.score + 1
+
+                ---@diagnostic disable-next-line: need-check-nil, undefined-field
+                goalHitSoundSrc:clone():play()
 
                 return
             end
@@ -319,6 +355,9 @@ function love.update(delta)
             if (distance <= ball.radius) then
                 ball.vectorX = -ball.vectorX
                 ballNewX = ball.x + ball.vectorX * delta * ball.speed
+
+                ---@diagnostic disable-next-line: need-check-nil, undefined-field
+                bounceSoundSrc:clone():play()
             end
 
             closedPointX = math.max(player2.x, math.min(ballNewX, player2.x + PADDLE_WIDTH))
@@ -328,6 +367,9 @@ function love.update(delta)
             if (distance <= ball.radius) then
                 ball.vectorX = -ball.vectorX
                 ballNewX = ball.x + ball.vectorX * delta * ball.speed
+
+                ---@diagnostic disable-next-line: need-check-nil, undefined-field
+                bounceSoundSrc:clone():play()
             end
 
 
@@ -434,6 +476,9 @@ function love.keypressed(key, scancode, isrepeat)
         if key == "escape" then
             focusedIndex = 1
             gameState = GameState.PAUSED
+
+            ---@diagnostic disable-next-line: need-check-nil, undefined-field
+            bgmSoundSrc:pause()
         end
     elseif gameState == GameState.MENU then
         -- PAUSE -> pause key -> playing
@@ -442,10 +487,16 @@ function love.keypressed(key, scancode, isrepeat)
         if key == "up" then
             if focusedIndex > 1 then
                 focusedIndex = focusedIndex - 1
+                ---@diagnostic disable: need-check-nil
+                ---@diagnostic disable-next-line: undefined-field
+                uiSoundSrc:clone():play()
             end
         elseif key == "down" then
-            if focusedIndex <= #(START_MENU) then
+            if focusedIndex < #(START_MENU) then
                 focusedIndex = focusedIndex + 1
+                ---@diagnostic disable: need-check-nil
+                ---@diagnostic disable-next-line: undefined-field
+                uiSoundSrc:clone():play()
             end
         elseif key == "return" or key == "kpenter" then
             START_MENU[focusedIndex].action()
@@ -454,10 +505,16 @@ function love.keypressed(key, scancode, isrepeat)
         if key == "up" then
             if focusedIndex > 1 then
                 focusedIndex = focusedIndex - 1
+                ---@diagnostic disable: need-check-nil
+                ---@diagnostic disable-next-line: undefined-field
+                uiSoundSrc:clone():play()
             end
         elseif key == "down" then
-            if focusedIndex <= #(GAME_OVER_MENU) then
+            if focusedIndex < #(GAME_OVER_MENU) then
                 focusedIndex = focusedIndex + 1
+                ---@diagnostic disable: need-check-nil
+                ---@diagnostic disable-next-line: undefined-field
+                uiSoundSrc:clone():play()
             end
         elseif key == "return" or key == "kpenter" then
             GAME_OVER_MENU[focusedIndex].action()
@@ -465,13 +522,21 @@ function love.keypressed(key, scancode, isrepeat)
     elseif gameState == GameState.PAUSED then
         if key == "escape" then
             gameState = GameState.PLAYING
+            ---@diagnostic disable-next-line: need-check-nil, undefined-field
+            bgmSoundSrc:play()
         elseif key == "up" then
             if focusedIndex > 1 then
                 focusedIndex = focusedIndex - 1
+                ---@diagnostic disable: need-check-nil
+                ---@diagnostic disable-next-line: undefined-field
+                uiSoundSrc:clone():play()
             end
         elseif key == "down" then
-            if focusedIndex <= #(PAUSE_MENU) then
+            if focusedIndex < #(PAUSE_MENU) then
                 focusedIndex = focusedIndex + 1
+                ---@diagnostic disable: need-check-nil
+                ---@diagnostic disable-next-line: undefined-field
+                uiSoundSrc:clone():play()
             end
         elseif key == "return" or key == "kpenter" then
             PAUSE_MENU[focusedIndex].action()
