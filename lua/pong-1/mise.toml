@@ -8,3 +8,12 @@ watchexec = "2.5.0"
 [tasks.dev]
 alias = "s"
 run = "love ."
+
+[tasks."build:web"]
+description = "Run the decoupled shell script to compile the game for web"
+run = "./build_web.sh"
+
+[tasks."serve:web"]
+description = "Rebuild and spin up a local web server using npm http-server"
+depends = ["build:web"]
+run = "npx browser-sync start --config bs-config.js"
