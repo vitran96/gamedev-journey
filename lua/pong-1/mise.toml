@@ -11,7 +11,15 @@ run = "love ."
 
 [tasks."build:web"]
 description = "Run the decoupled shell script to compile the game for web"
-run = "./build_web.sh"
+run = "./build.sh web"
+
+[tasks."build:windows"]
+description = "Package and fuse project for native Windows environments"
+run = "./build.sh windows"
+
+[tasks."build:all"]
+description = "Trigger web and windows packaging pipelines simultaneously"
+run = "./build.sh all"
 
 [tasks."serve:web"]
 description = "Rebuild and spin up a local web server using npm http-server"
