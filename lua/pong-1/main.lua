@@ -272,11 +272,25 @@ function love.update(delta)
             player1.y = player1.y + player1Move
         end
 
+        local player2NewY
         if isAI then
-            if ball.y < player2.y then
-                player2Move = player2Move - PLAYER_SPEED * delta
-            elseif ball.y > player2.y then
-                player2Move = player2Move + PLAYER_SPEED * delta
+            local playerMiddle = player2.y + PADDLE_HEIGHT/2
+            local distance = math.abs(ball.y - playerMiddle)
+            local moveStep = PLAYER_SPEED * delta
+            if distance < moveStep then
+                -- NOTE: over OVERSHOOTING (jitering / flickering)
+                -- this make the paddle move smoothly but a bit too smart
+
+                -- TODO: still jiterring and teleport sometime
+                player2NewY = ball.y
+            else
+                if ball.y < player2.y then
+                    player2Move = player2Move - PLAYER_SPEED * delta
+                elseif ball.y > player2.y then
+                    player2Move = player2Move + PLAYER_SPEED * delta
+                end
+
+                player2NewY = player2.y + player2Move
             end
         else
             if (love.keyboard.isDown(PLAYER_2_CONTROL.up)) then
@@ -286,9 +300,10 @@ function love.update(delta)
             if (love.keyboard.isDown(PLAYER_2_CONTROL.down)) then
                 player2Move = player2Move + PLAYER_SPEED * delta
             end
+
+            player2NewY = player2.y + player2Move
         end
 
-        local player2NewY = player2.y + player2Move
         if (player2NewY >= 0 and player2NewY + PADDLE_HEIGHT <= windowHeight) then
             player2.y = player2NewY
         end
@@ -483,7 +498,7 @@ end
 function love.keypressed(key, scancode, isrepeat)
     if gameState == GameState.PLAYING then
         -- PLAYING -> pause key -> pause
-        if key == "escape" then
+        if key == "escape" or key == "p" then
             focusedIndex = 1
             gameState = GameState.PAUSED
 
