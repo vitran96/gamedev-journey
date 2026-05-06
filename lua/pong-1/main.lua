@@ -22,7 +22,7 @@ local PADDLE_HEIGHT = 100
 
 local GOAL_PADDING = 20
 
-local gameState = nil
+local gameState
 
 local windowWidth = 0
 local windowHeight = 0
@@ -37,8 +37,9 @@ local player2 = {
     x = 0,
     y = 0,
     score = 0,
-    isAI = false
 }
+
+local isAI = false
 
 local player1Goal = {
     x = 0,
@@ -67,8 +68,8 @@ local PLAYER_2_CONTROL = {
     down = "down"
 }
 
-local scoreBoardFont = nil
-local menuFont = nil
+local scoreBoardFont
+local menuFont
 
 local ball = {
     x = 0,
@@ -91,16 +92,13 @@ local GAME_OVER_MENU = {}
 local POINT_2_WIN = 5
 -- local POINT_2_WIN = 1
 
-local uiSoundSrc = nil
-local bounceSoundSrc = nil
-local bgmSoundSrc = nil
-local goalHitSoundSrc = nil
+local uiSoundSrc
+local bounceSoundSrc
+local bgmSoundSrc
+local goalHitSoundSrc
 
 local function startGame()
-    ---@diagnostic disable-next-line: need-check-nil, undefined-field
     bgmSoundSrc:stop()
-
-    ---@diagnostic disable-next-line: need-check-nil, undefined-field
     bgmSoundSrc:play()
 
     player1 = {
@@ -120,7 +118,6 @@ local function startGame()
         x = windowWidth - PADDLE_WIDTH - GOAL_PADDING,
         y = (windowHeight - PADDLE_HEIGHT) / 2,
         score = 0,
-        isAI = false,
     }
 
     player2Goal = {
@@ -147,6 +144,11 @@ local function quitGame()
     love.event.quit()
 end
 
+local function startGameVsBot()
+    isAI = true
+    startGame()
+end
+
 function love.load()
     gameState = GameState.MENU
     -- gameState = GameState.PLAYING
@@ -166,15 +168,15 @@ function love.load()
             limit = windowWidth,
             action = startGame
         },
-        -- {
-        --     label = "VS Bot",
-        --     y = windowHeight / 2,
-        --     limit = windowWidth,
-        --     action = ...
-        -- },
+        {
+            label = "VS Bot",
+            y = windowHeight / 2,
+            limit = windowWidth,
+            action = startGameVsBot
+        },
         {
             label = "Quit",
-            y = windowHeight / 2,
+            y = windowHeight / 2 + MENU_ITEM_GAP,
             limit = windowWidth,
             action = quitGame
         }
@@ -270,12 +272,20 @@ function love.update(delta)
             player1.y = player1.y + player1Move
         end
 
-        if (love.keyboard.isDown(PLAYER_2_CONTROL.up)) then
-            player2Move = player2Move - PLAYER_SPEED * delta
-        end
+        if isAI then
+            if ball.y < player2.y then
+                player2Move = player2Move - PLAYER_SPEED * delta
+            elseif ball.y > player2.y then
+                player2Move = player2Move + PLAYER_SPEED * delta
+            end
+        else
+            if (love.keyboard.isDown(PLAYER_2_CONTROL.up)) then
+                player2Move = player2Move - PLAYER_SPEED * delta
+            end
 
-        if (love.keyboard.isDown(PLAYER_2_CONTROL.down)) then
-            player2Move = player2Move + PLAYER_SPEED * delta
+            if (love.keyboard.isDown(PLAYER_2_CONTROL.down)) then
+                player2Move = player2Move + PLAYER_SPEED * delta
+            end
         end
 
         local player2NewY = player2.y + player2Move
@@ -520,7 +530,7 @@ function love.keypressed(key, scancode, isrepeat)
             GAME_OVER_MENU[focusedIndex].action()
         end
     elseif gameState == GameState.PAUSED then
-        if key == "escape" then
+        if key == "escape" or key == "p" then
             gameState = GameState.PLAYING
             ---@diagnostic disable-next-line: need-check-nil, undefined-field
             bgmSoundSrc:play()
