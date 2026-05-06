@@ -1,0 +1,17 @@
+{
+    "recommendations": [
+        "usernamehw.errorlens",
+        "eamodio.gitlens",
+        "syler.ignore",
+        "oderwat.indent-rainbow",
+        "jgclark.vscode-todo-highlight",
+        "pixelwar.love2dsnippets",
+        "pixelbyte-studios.pixelbyte-love2d",
+        "sumneko.lua",
+        "cobaltblu27.rainbow-highlighter",
+        "slevesque.shader",
+        "bschulte.love",
+        "yinfei.luahelper",
+        "actboy168.lua-debug"
+    ]
+}

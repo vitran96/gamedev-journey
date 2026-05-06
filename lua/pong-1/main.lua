@@ -245,7 +245,6 @@ function love.load()
     menuFont = love.graphics.newFont(PLAYER_FONT_PATH, 36)
 end
 
--- TODO: implement AI for player 2
 function love.update(delta)
     if gameState == GameState.PLAYING then
 
@@ -311,7 +310,6 @@ function love.update(delta)
         if (ball.startTimer > 0) then
             ball.startTimer = ball.startTimer - delta
         else
-            -- TODO: consider check boundary 1st before calculation
             if (ball.vectorX == 0 and ball.vectorY == 0) then
                 -- Random starting vector
                 -- TODO: better limit to only shoot 315 -> 45 & 135 -> 215
@@ -567,9 +565,4 @@ function love.keypressed(key, scancode, isrepeat)
             PAUSE_MENU[focusedIndex].action()
         end
     end
-end
-
-function love.mousepressed(x, y, button, isTouch)
-    -- TODO:
-    -- PAUSE / MENU / END -> left click -> choose option
 end

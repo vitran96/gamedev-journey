@@ -1,0 +1,9 @@
+*.love
+
+build/
+out/
+dist/
+
+tmp/
+
+node_modules/
