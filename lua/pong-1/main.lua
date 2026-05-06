@@ -498,7 +498,7 @@ end
 function love.keypressed(key, scancode, isrepeat)
     if gameState == GameState.PLAYING then
         -- PLAYING -> pause key -> pause
-        if key == "escape" or key == "p" then
+        if key == "escape" or key == "h" then
             focusedIndex = 1
             gameState = GameState.PAUSED
 
@@ -545,7 +545,7 @@ function love.keypressed(key, scancode, isrepeat)
             GAME_OVER_MENU[focusedIndex].action()
         end
     elseif gameState == GameState.PAUSED then
-        if key == "escape" or key == "p" then
+        if key == "escape" or key == "h" then
             gameState = GameState.PLAYING
             ---@diagnostic disable-next-line: need-check-nil, undefined-field
             bgmSoundSrc:play()
